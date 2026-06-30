@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase, Group, Participant } from '@/lib/supabase';
 import ScheduleGrid, { slotKey } from '@/components/ScheduleGrid';
 
-export default function SchedulePage({ params }: { params: { id: string } }) {
+export default function SchedulePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id: groupId } = use(params);
   const router = useRouter();
   const searchParams = useSearchParams();
   const participantId = searchParams.get('pid');
@@ -21,13 +22,13 @@ export default function SchedulePage({ params }: { params: { id: string } }) {
   useEffect(() => {
     if (!participantId) return;
     (async () => {
-      const { data: groupData } = await supabase.from('groups').select('*').eq('id', params.id).single();
+      const { data: groupData } = await supabase.from('groups').select('*').eq('id', groupId).single();
       const { data: participantData } = await supabase.from('participants').select('*').eq('id', participantId).single();
       setGroup(groupData);
       setParticipant(participantData);
       setLoading(false);
     })();
-  }, [params.id, participantId]);
+  }, [groupId, participantId]);
 
   if (loading || !group || !participant) {
     return (
@@ -65,7 +66,7 @@ export default function SchedulePage({ params }: { params: { id: string } }) {
 
       await supabase.from('participants').update({ status: 'completed' }).eq('id', participant!.id);
 
-      router.push(`/group/${params.id}/results?pid=${participant!.id}`);
+      router.push(`/group/${groupId}/results?pid=${participant!.id}`);
     } catch (err) {
       console.error(err);
       alert('저장 중 문제가 발생했어요.');

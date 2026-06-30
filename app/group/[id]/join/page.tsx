@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase, Group, Participant } from '@/lib/supabase';
 
-export default function JoinPage({ params }: { params: { id: string } }) {
+export default function JoinPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id: groupId } = use(params);
   const router = useRouter();
   const [group, setGroup] = useState<Group | null>(null);
   const [participants, setParticipants] = useState<Participant[]>([]);
@@ -12,13 +13,13 @@ export default function JoinPage({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     (async () => {
-      const { data: groupData } = await supabase.from('groups').select('*').eq('id', params.id).single();
-      const { data: participantsData } = await supabase.from('participants').select('*').eq('group_id', params.id).order('created_at');
+      const { data: groupData } = await supabase.from('groups').select('*').eq('id', groupId).single();
+      const { data: participantsData } = await supabase.from('participants').select('*').eq('group_id', groupId).order('created_at');
       setGroup(groupData);
       setParticipants(participantsData || []);
       setLoading(false);
     })();
-  }, [params.id]);
+  }, [groupId]);
 
   if (loading || !group) {
     return (
@@ -40,7 +41,7 @@ export default function JoinPage({ params }: { params: { id: string } }) {
         {participants.map((p) => (
           <button
             key={p.id}
-            onClick={() => router.push(`/group/${params.id}/schedule?pid=${p.id}`)}
+            onClick={() => router.push(`/group/${groupId}/schedule?pid=${p.id}`)}
             style={{
               width: '100%',
               textAlign: 'left',

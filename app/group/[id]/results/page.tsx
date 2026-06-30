@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, use } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase, Group, Participant, TimeBlock } from '@/lib/supabase';
 import { calculateRecommendations, SlotCandidate } from '@/lib/recommend';
@@ -12,7 +12,8 @@ const ROLE_LABEL: Record<string, string> = {
   optional: '선택 참여',
 };
 
-export default function ResultsPage({ params }: { params: { id: string } }) {
+export default function ResultsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id: groupId } = use(params);
   const router = useRouter();
   const searchParams = useSearchParams();
   const myParticipantId = searchParams.get('pid');
@@ -25,8 +26,8 @@ export default function ResultsPage({ params }: { params: { id: string } }) {
 
   const fetchData = useCallback(async () => {
     const [{ data: groupData }, { data: participantsData }] = await Promise.all([
-      supabase.from('groups').select('*').eq('id', params.id).single(),
-      supabase.from('participants').select('*').eq('group_id', params.id).order('created_at'),
+      supabase.from('groups').select('*').eq('id', groupId).single(),
+      supabase.from('participants').select('*').eq('group_id', groupId).order('created_at'),
     ]);
 
     setGroup(groupData);
@@ -38,7 +39,7 @@ export default function ResultsPage({ params }: { params: { id: string } }) {
       setTimeBlocks(blocksData || []);
     }
     setLoading(false);
-  }, [params.id]);
+  }, [groupId]);
 
   useEffect(() => {
     fetchData();
@@ -46,15 +47,15 @@ export default function ResultsPage({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     const channel = supabase
-      .channel(`group-${params.id}`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'participants', filter: `group_id=eq.${params.id}` }, fetchData)
+      .channel(`group-${groupId}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'participants', filter: `group_id=eq.${groupId}` }, fetchData)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'time_blocks' }, fetchData)
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [params.id, fetchData]);
+  }, [groupId, fetchData]);
 
   if (loading || !group) {
     return (
@@ -73,7 +74,7 @@ export default function ResultsPage({ params }: { params: { id: string } }) {
     group.grid_end_hour
   );
 
-  const inviteUrl = typeof window !== 'undefined' ? `${window.location.origin}/group/${params.id}/join` : '';
+  const inviteUrl = typeof window !== 'undefined' ? `${window.location.origin}/group/${groupId}/join` : '';
 
   function copyInviteLink() {
     navigator.clipboard.writeText(inviteUrl);
@@ -147,7 +148,7 @@ export default function ResultsPage({ params }: { params: { id: string } }) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {myParticipantId && (
           <button
-            onClick={() => router.push(`/group/${params.id}/schedule?pid=${myParticipantId}`)}
+            onClick={() => router.push(`/group/${groupId}/schedule?pid=${myParticipantId}`)}
             style={{
               width: '100%',
               padding: '14px',
