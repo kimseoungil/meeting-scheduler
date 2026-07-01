@@ -163,15 +163,8 @@ function FragmentRow({
         const key = slotKey(date, slot);
         const isFixed = fixedSlots.has(key);
         const isActive = activeSlots.has(key);
-        let bg = '#fff';
-        let border = '1px solid #eee';
-        if (isFixed) {
-          bg = fixedColor;
-          border = '1px solid transparent';
-        } else if (isActive) {
-          bg = activeColor;
-          border = '1px solid transparent';
-        }
+        const isColored = isFixed || isActive;
+        const bg = isFixed ? fixedColor : isActive ? activeColor : '#fff';
         return (
           <div
             key={key}
@@ -194,12 +187,8 @@ function FragmentRow({
             data-cellkey={key}
             style={{
               height: 14,
-              borderRadius: 0,
               background: bg,
-              borderLeft: border,
-              borderRight: border,
-              borderTop: 'none',
-              borderBottom: '1px solid #f0f0f0',
+              borderBottom: isColored ? 'none' : '1px solid #f0f0f0',
               cursor: isFixed ? 'default' : 'pointer',
             }}
           />
