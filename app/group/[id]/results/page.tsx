@@ -117,9 +117,17 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
         </div>
       )}
 
-      <div style={{ marginBottom: 20 }}>
-        <p style={{ fontSize: 13, color: '#999', margin: '0 0 4px' }}>5 / 5</p>
-        <h1 style={{ fontSize: 19, fontWeight: 600, margin: 0 }}>{group.title}</h1>
+      <div style={{ marginBottom: 20, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+        <div>
+          <p style={{ fontSize: 13, color: '#999', margin: '0 0 4px' }}>5 / 5</p>
+          <h1 style={{ fontSize: 19, fontWeight: 600, margin: 0 }}>{group.title}</h1>
+        </div>
+        <button
+          onClick={copyInviteLink}
+          style={{ background: 'none', border: 'none', padding: 0, fontSize: 13, color: copied ? '#1d9e75' : '#999', textDecoration: 'underline', cursor: 'pointer', flexShrink: 0, marginBottom: 2 }}
+        >
+          {copied ? '복사됐어요' : '초대 링크 복사'}
+        </button>
       </div>
 
       <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
@@ -171,12 +179,6 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
                 내 입력 수정
               </button>
             )}
-            <button
-              onClick={copyInviteLink}
-              style={{ width: '100%', padding: '14px', borderRadius: 10, background: '#f7f7f5', color: '#666', fontSize: 14, fontWeight: 500, border: 'none' }}
-            >
-              {copied ? '링크가 복사됐어요' : '초대 링크 복사'}
-            </button>
             {candidates.length > 0 && (
               <button
                 onClick={handleConfirm}
