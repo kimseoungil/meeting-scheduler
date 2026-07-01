@@ -171,7 +171,7 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
         </div>
 
         {/* 오른쪽: 버튼 + 참여자 + 확정 */}
-        <div style={{ width: 180, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{ width: 180, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 8, position: 'sticky', top: 24, alignSelf: 'flex-start' }}>
           {isHost && (
             <button
               onClick={() => router.push(`/group/${groupId}/edit?pid=${myParticipantId}`)}
