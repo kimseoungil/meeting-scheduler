@@ -77,7 +77,7 @@ export default function SchedulePage({ params }: { params: Promise<{ id: string 
   const stepNumber = step === 'unavailable' ? 3 : 4;
 
   return (
-    <main style={{ minHeight: '100dvh', padding: '20px', maxWidth: 1000, margin: '0 auto', display: 'flex', flexDirection: 'column', width: '100%', boxSizing: 'border-box' as const }}>
+    <main style={{ minHeight: '100dvh', padding: '20px', maxWidth: 800, margin: '0 auto', display: 'flex', flexDirection: 'column', width: '100%', boxSizing: 'border-box' as const }}>
       <div style={{ marginBottom: 16 }}>
         <p style={{ fontSize: 13, color: '#999', margin: '0 0 4px' }}>{stepNumber} / 5</p>
         {step === 'unavailable' ? (
