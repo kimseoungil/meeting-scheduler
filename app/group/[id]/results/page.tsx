@@ -91,7 +91,7 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
   });
 
   return (
-    <main style={{ minHeight: '100dvh', padding: '24px 40px', maxWidth: 800, margin: '0 auto' }}>
+    <main style={{ minHeight: '100dvh', padding: '24px 40px', maxWidth: 1100, margin: '0 auto' }}>
       <div style={{ marginBottom: 20 }}>
         <p style={{ fontSize: 13, color: '#999', margin: '0 0 4px' }}>5 / 5</p>
         <h1 style={{ fontSize: 19, fontWeight: 600, margin: 0 }}>{group.title}</h1>
@@ -99,7 +99,7 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
 
       <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
         {/* 왼쪽: 추천 카드 */}
-        <div style={{ flex: 3, minWidth: 0 }}>
+        <div style={{ flex: 3, minWidth: 0, maxWidth: 680 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
             <p style={{ fontSize: 14, fontWeight: 500, margin: 0 }}>추천 회의 시간</p>
             <p style={{ fontSize: 11, color: '#999', margin: 0 }}>마감 {deadlineLabel}</p>
