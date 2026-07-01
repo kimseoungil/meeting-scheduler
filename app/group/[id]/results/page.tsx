@@ -287,7 +287,7 @@ function CandidateCard({ candidate, rank, gridStartHour, selected, onSelect }: {
 
       <div style={{ flex: 1, minWidth: 0 }}>
         <p style={{ fontSize: 15, fontWeight: 500, margin: 0 }}>
-          {getWeekdayLabel(candidate.date)} {formatDateShort(candidate.date)} · {startTime}–{endTime}
+          {getWeekdayLabel(candidate.date)} {formatDateShort(candidate.date)} · {startTime} ~ {endTime}
         </p>
         <p style={{ fontSize: 12, color: '#666', margin: '4px 0 0' }}>
           필참 {candidate.requiredAvailable}/{candidate.requiredTotal} 가능
