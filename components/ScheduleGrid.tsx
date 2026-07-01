@@ -102,7 +102,7 @@ export default function ScheduleGrid({
         </span>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: `32px repeat(${weekdays.length}, 1fr)`, gap: 2 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: `32px repeat(${weekdays.length}, 1fr)`, columnGap: 2, rowGap: 0 }}>
         <div />
         {weekdays.map((d) => (
           <div key={d} style={{ textAlign: 'center', fontSize: 11, color: '#999', paddingBottom: 4 }}>
@@ -194,9 +194,12 @@ function FragmentRow({
             data-cellkey={key}
             style={{
               height: 14,
-              borderRadius: 3,
+              borderRadius: 0,
               background: bg,
-              border,
+              borderLeft: border,
+              borderRight: border,
+              borderTop: 'none',
+              borderBottom: '1px solid #f0f0f0',
               cursor: isFixed ? 'default' : 'pointer',
             }}
           />
