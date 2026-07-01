@@ -154,15 +154,15 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
 
         <Field label="기간">
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <input type="date" value={startDate} onChange={(e) => handleStartDateChange(e.target.value)} style={{ ...inputStyle, flex: 1 }} />
+            <input type="date" value={startDate} onChange={(e) => handleStartDateChange(e.target.value)} onClick={(e) => (e.currentTarget as HTMLInputElement).showPicker?.()} style={{ ...inputStyle, flex: 1 }} />
             <span style={{ color: '#999' }}>–</span>
-            <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} style={{ ...inputStyle, flex: 1 }} />
+            <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} onClick={(e) => (e.currentTarget as HTMLInputElement).showPicker?.()} style={{ ...inputStyle, flex: 1 }} />
           </div>
         </Field>
 
         <Field label="응답 마감">
           <div style={{ display: 'flex', gap: 8 }}>
-            <input type="date" value={deadlineDate} onChange={(e) => setDeadlineDate(e.target.value)} style={{ ...inputStyle, flex: 1.4 }} />
+            <input type="date" value={deadlineDate} onChange={(e) => setDeadlineDate(e.target.value)} onClick={(e) => (e.currentTarget as HTMLInputElement).showPicker?.()} style={{ ...inputStyle, flex: 1.4 }} />
             <input type="time" value={deadlineTime} onChange={(e) => setDeadlineTime(e.target.value)} style={{ ...inputStyle, flex: 1 }} />
           </div>
         </Field>
