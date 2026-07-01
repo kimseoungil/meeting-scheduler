@@ -146,6 +146,23 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {myParticipantId && participants.find((p) => p.id === myParticipantId)?.role === 'host' && (
+          <button
+            onClick={() => router.push(`/group/${groupId}/edit?pid=${myParticipantId}`)}
+            style={{
+              width: '100%',
+              padding: '14px',
+              borderRadius: 10,
+              background: '#111',
+              color: '#fff',
+              fontSize: 14,
+              fontWeight: 500,
+              border: 'none',
+            }}
+          >
+            회의 수정
+          </button>
+        )}
         {myParticipantId && (
           <button
             onClick={() => router.push(`/group/${groupId}/schedule?pid=${myParticipantId}`)}
