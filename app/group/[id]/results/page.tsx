@@ -23,6 +23,7 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
   const [timeBlocks, setTimeBlocks] = useState<TimeBlock[]>([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [confirmModal, setConfirmModal] = useState<'loading' | 'done' | null>(null);
 
   const fetchData = useCallback(async () => {
     const [{ data: groupData }, { data: participantsData }] = await Promise.all([
@@ -83,6 +84,12 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
   }
 
   const completedCount = participants.filter((p) => p.status === 'completed').length;
+  const allResponded = participants.length > 0 && completedCount === participants.length;
+
+  function handleConfirm() {
+    setConfirmModal('loading');
+    setTimeout(() => setConfirmModal('done'), 2000);
+  }
   const deadlineLabel = new Date(group.deadline).toLocaleString('ko-KR', {
     month: 'numeric',
     day: 'numeric',
@@ -92,6 +99,50 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
 
   return (
     <main style={{ minHeight: '100dvh', padding: '24px 40px', maxWidth: 800, margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+      {confirmModal && (
+        <div style={{
+          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100,
+        }}>
+          <div style={{
+            background: '#fff', borderRadius: 20, padding: '40px 48px',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, minWidth: 260,
+          }}>
+            {confirmModal === 'loading' ? (
+              <>
+                <div style={{
+                  width: 48, height: 48, border: '3px solid #eee',
+                  borderTop: '3px solid #111', borderRadius: '50%',
+                  animation: 'spin 0.8s linear infinite',
+                }} />
+                <p style={{ fontSize: 15, fontWeight: 500, margin: 0 }}>캘린더에 추가하는 중...</p>
+              </>
+            ) : (
+              <>
+                <div style={{
+                  width: 52, height: 52, borderRadius: '50%', background: '#111',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                    <path d="M5 13l4 4L19 7" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <p style={{ fontSize: 15, fontWeight: 500, margin: 0 }}>캘린더에 추가했습니다!</p>
+                <button
+                  onClick={() => setConfirmModal(null)}
+                  style={{
+                    marginTop: 4, padding: '10px 28px', borderRadius: 10,
+                    background: '#f7f7f5', border: 'none', fontSize: 14, color: '#666',
+                  }}
+                >
+                  닫기
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       <div style={{ marginBottom: 20 }}>
         <p style={{ fontSize: 13, color: '#999', margin: '0 0 4px' }}>5 / 5</p>
         <h1 style={{ fontSize: 19, fontWeight: 600, margin: 0 }}>{group.title}</h1>
@@ -114,7 +165,14 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {candidates.map((c, i) => (
-                <CandidateCard key={`${c.date}_${c.startSlot}`} candidate={c} rank={i + 1} gridStartHour={group.grid_start_hour} />
+                <CandidateCard
+                  key={`${c.date}_${c.startSlot}`}
+                  candidate={c}
+                  rank={i + 1}
+                  gridStartHour={group.grid_start_hour}
+                  canConfirm={i === 0 && allResponded}
+                  onConfirm={handleConfirm}
+                />
               ))}
             </div>
           )}
@@ -209,7 +267,13 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
   );
 }
 
-function CandidateCard({ candidate, rank, gridStartHour }: { candidate: SlotCandidate; rank: number; gridStartHour: number }) {
+function CandidateCard({ candidate, rank, gridStartHour, canConfirm, onConfirm }: {
+  candidate: SlotCandidate;
+  rank: number;
+  gridStartHour: number;
+  canConfirm?: boolean;
+  onConfirm?: () => void;
+}) {
   const isTop = rank === 1;
   const startTime = slotToTimeLabel(candidate.startSlot, gridStartHour);
   const endTime = slotToTimeLabel(candidate.startSlot + 2, gridStartHour);
@@ -223,21 +287,43 @@ function CandidateCard({ candidate, rank, gridStartHour }: { candidate: SlotCand
         border: isTop ? '2px solid #185fa5' : '1px solid #eee',
       }}
     >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-        <p style={{ fontSize: 15, fontWeight: 500, margin: 0 }}>
-          {getWeekdayLabel(candidate.date)} {formatDateShort(candidate.date)} · {startTime}–{endTime}
-        </p>
-        {isTop ? (
-          <span style={{ fontSize: 11, background: '#e6f1fb', color: '#0c447c', padding: '3px 10px', borderRadius: 6 }}>1순위</span>
-        ) : (
-          <span style={{ fontSize: 11, color: '#999' }}>{rank}순위</span>
-        )}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <p style={{ fontSize: 15, fontWeight: 500, margin: 0 }}>
+            {getWeekdayLabel(candidate.date)} {formatDateShort(candidate.date)} · {startTime}–{endTime}
+          </p>
+          <p style={{ fontSize: 12, color: '#666', margin: '6px 0 0' }}>
+            필참 {candidate.requiredAvailable}/{candidate.requiredTotal} 가능
+            {candidate.optionalTotal > 0 && ` · 선택 ${candidate.optionalAvailable}/${candidate.optionalTotal} 가능`}
+            {candidate.dislikedCount > 0 && ` · 비선호 ${candidate.dislikedCount}명 포함`}
+          </p>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0, marginLeft: 12 }}>
+          {isTop ? (
+            <span style={{ fontSize: 11, background: '#e6f1fb', color: '#0c447c', padding: '3px 10px', borderRadius: 6 }}>1순위</span>
+          ) : (
+            <span style={{ fontSize: 11, color: '#999' }}>{rank}순위</span>
+          )}
+          {isTop && (
+            <button
+              onClick={onConfirm}
+              disabled={!canConfirm}
+              style={{
+                padding: '8px 16px',
+                borderRadius: 8,
+                background: canConfirm ? '#111' : '#e5e5e5',
+                color: canConfirm ? '#fff' : '#aaa',
+                fontSize: 13,
+                fontWeight: 500,
+                border: 'none',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {canConfirm ? '확정하기' : '응답 대기 중'}
+            </button>
+          )}
+        </div>
       </div>
-      <p style={{ fontSize: 12, color: '#666', margin: '6px 0 0' }}>
-        필참 {candidate.requiredAvailable}/{candidate.requiredTotal} 가능
-        {candidate.optionalTotal > 0 && ` · 선택 ${candidate.optionalAvailable}/${candidate.optionalTotal} 가능`}
-        {candidate.dislikedCount > 0 && ` · 비선호 ${candidate.dislikedCount}명 포함`}
-      </p>
     </div>
   );
 }
