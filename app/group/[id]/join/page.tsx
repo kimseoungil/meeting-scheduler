@@ -30,7 +30,7 @@ export default function JoinPage({ params }: { params: Promise<{ id: string }> }
   }
 
   return (
-    <main style={{ minHeight: '100dvh', padding: '20px', maxWidth: 480, margin: '0 auto', display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '100%', boxSizing: 'border-box' as const }}>
+    <main style={{ minHeight: '100dvh', padding: '20px', maxWidth: 1200, margin: '0 auto', display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '100%', boxSizing: 'border-box' as const }}>
       <div style={{ marginBottom: 24 }}>
         <p style={{ fontSize: 13, color: '#999', margin: '0 0 4px' }}>회의 초대</p>
         <h1 style={{ fontSize: 20, fontWeight: 600, margin: 0 }}>{group.title}</h1>
