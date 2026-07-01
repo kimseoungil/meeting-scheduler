@@ -89,7 +89,17 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
 
   return (
     <main style={{ minHeight: '100dvh', padding: '24px 40px', maxWidth: 800, margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @media (max-width: 600px) {
+          .confirm-desktop { display: none !important; }
+          .confirm-mobile { display: block !important; }
+        }
+        @media (min-width: 601px) {
+          .confirm-desktop { display: block !important; }
+          .confirm-mobile { display: none !important; }
+        }
+      `}</style>
 
       {/* 확정 모달 */}
       {confirmModal && (
@@ -205,6 +215,7 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
 
           {candidates.length > 0 && (
             <button
+              className="confirm-desktop"
               onClick={handleConfirm}
               disabled={!allResponded}
               style={{
@@ -218,6 +229,26 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
           )}
         </div>
       </div>
+
+      {/* 모바일 하단 고정 CTA */}
+      {candidates.length > 0 && (
+        <div
+          className="confirm-mobile"
+          style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '16px 20px 32px', background: '#fff', borderTop: '1px solid #eee', zIndex: 50 }}
+        >
+          <button
+            onClick={handleConfirm}
+            disabled={!allResponded}
+            style={{
+              width: '100%', padding: '16px', borderRadius: 12, fontSize: 16, fontWeight: 600, border: 'none',
+              background: allResponded ? '#111' : '#e5e5e5',
+              color: allResponded ? '#fff' : '#aaa',
+            }}
+          >
+            {allResponded ? '확정하기' : `확정 (${completedCount}/${participants.length}명 응답)`}
+          </button>
+        </div>
+      )}
     </main>
   );
 }
