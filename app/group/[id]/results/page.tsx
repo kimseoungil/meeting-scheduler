@@ -170,8 +170,22 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
           )}
         </div>
 
-        {/* 오른쪽: 버튼 + 참여자 + 확정 */}
-        <div style={{ width: 180, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 8, position: 'sticky', top: 24, alignSelf: 'flex-start' }}>
+        {/* 오른쪽: 버튼 + 참여자 */}
+        <div style={{ width: 180, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {candidates.length > 0 && (
+            <button
+              className="confirm-desktop"
+              onClick={handleConfirm}
+              disabled={!allResponded}
+              style={{
+                width: '100%', padding: '14px', borderRadius: 10, fontSize: 14, fontWeight: 500, border: 'none',
+                background: allResponded ? '#111' : '#e5e5e5',
+                color: allResponded ? '#fff' : '#aaa',
+              }}
+            >
+              확정
+            </button>
+          )}
           {isHost && (
             <button
               onClick={() => router.push(`/group/${groupId}/edit?pid=${myParticipantId}`)}
@@ -212,21 +226,6 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
               ))}
             </div>
           </div>
-
-          {candidates.length > 0 && (
-            <button
-              className="confirm-desktop"
-              onClick={handleConfirm}
-              disabled={!allResponded}
-              style={{
-                width: '100%', padding: '14px', borderRadius: 10, fontSize: 14, fontWeight: 500, border: 'none', marginTop: 12,
-                background: allResponded ? '#111' : '#e5e5e5',
-                color: allResponded ? '#fff' : '#aaa',
-              }}
-            >
-              확정
-            </button>
-          )}
         </div>
       </div>
 
