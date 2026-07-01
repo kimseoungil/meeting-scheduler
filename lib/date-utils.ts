@@ -31,7 +31,10 @@ export function slotToTimeLabel(slotIndex: number, gridStartHour: number): strin
   const totalMinutes = gridStartHour * 60 + slotIndex * 30;
   const hour = Math.floor(totalMinutes / 60);
   const minute = totalMinutes % 60;
-  return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+  const period = hour < 12 ? '오전' : '오후';
+  const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+  const minuteStr = minute > 0 ? `:${String(minute).padStart(2, '0')}` : '';
+  return `${period}${displayHour}시${minuteStr}`;
 }
 
 export function getSlotCount(gridStartHour: number, gridEndHour: number): number {
