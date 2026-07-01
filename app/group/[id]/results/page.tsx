@@ -160,61 +160,62 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
           )}
         </div>
 
-        {/* 오른쪽: 버튼 + 참여자 */}
-        <div style={{ width: 180, flexShrink: 0 }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 20 }}>
-            {isHost && (
-              <button
-                onClick={() => router.push(`/group/${groupId}/edit?pid=${myParticipantId}`)}
-                style={{ width: '100%', padding: '14px', borderRadius: 10, background: '#111', color: '#fff', fontSize: 14, fontWeight: 500, border: 'none' }}
-              >
-                회의 수정
-              </button>
-            )}
-            {myParticipantId && (
-              <button
-                onClick={() => router.push(`/group/${groupId}/schedule?pid=${myParticipantId}`)}
-                style={{ width: '100%', padding: '14px', borderRadius: 10, background: '#fff', color: '#111', fontSize: 14, fontWeight: 500, border: '1px solid #ddd' }}
-              >
-                내 입력 수정
-              </button>
-            )}
-            {candidates.length > 0 && (
-              <button
-                onClick={handleConfirm}
-                disabled={!allResponded}
-                style={{
-                  width: '100%', padding: '14px', borderRadius: 10, fontSize: 14, fontWeight: 500, border: 'none',
-                  background: allResponded ? '#111' : '#e5e5e5',
-                  color: allResponded ? '#fff' : '#aaa',
-                }}
-              >
-                확정
-              </button>
-            )}
+        {/* 오른쪽: 버튼 + 참여자 + 확정 */}
+        <div style={{ width: 180, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {isHost && (
+            <button
+              onClick={() => router.push(`/group/${groupId}/edit?pid=${myParticipantId}`)}
+              style={{ width: '100%', padding: '14px', borderRadius: 10, background: '#111', color: '#fff', fontSize: 14, fontWeight: 500, border: 'none' }}
+            >
+              회의 수정
+            </button>
+          )}
+          {myParticipantId && (
+            <button
+              onClick={() => router.push(`/group/${groupId}/schedule?pid=${myParticipantId}`)}
+              style={{ width: '100%', padding: '14px', borderRadius: 10, background: '#fff', color: '#111', fontSize: 14, fontWeight: 500, border: '1px solid #ddd' }}
+            >
+              내 입력 수정
+            </button>
+          )}
+
+          <div style={{ marginTop: 12 }}>
+            <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 8px' }}>
+              참여자 {completedCount}/{participants.length}
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {participants.map((p) => (
+                <div
+                  key={p.id}
+                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', background: p.id === myParticipantId ? '#eef6ff' : '#f7f7f5', borderRadius: 8 }}
+                >
+                  <div>
+                    <span style={{ fontSize: 13 }}>{p.name}</span>
+                    <span style={{ fontSize: 11, color: '#999', marginLeft: 6 }}>{ROLE_LABEL[p.role]}</span>
+                  </div>
+                  {p.status === 'completed' ? (
+                    <span style={{ fontSize: 11, color: '#1d9e75' }}>완료</span>
+                  ) : (
+                    <span style={{ fontSize: 11, color: '#ba7517' }}>대기</span>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
 
-          <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 8px' }}>
-            참여자 {completedCount}/{participants.length}
-          </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {participants.map((p) => (
-              <div
-                key={p.id}
-                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', background: p.id === myParticipantId ? '#eef6ff' : '#f7f7f5', borderRadius: 8 }}
-              >
-                <div>
-                  <span style={{ fontSize: 13 }}>{p.name}</span>
-                  <span style={{ fontSize: 11, color: '#999', marginLeft: 6 }}>{ROLE_LABEL[p.role]}</span>
-                </div>
-                {p.status === 'completed' ? (
-                  <span style={{ fontSize: 11, color: '#1d9e75' }}>완료</span>
-                ) : (
-                  <span style={{ fontSize: 11, color: '#ba7517' }}>대기</span>
-                )}
-              </div>
-            ))}
-          </div>
+          {candidates.length > 0 && (
+            <button
+              onClick={handleConfirm}
+              disabled={!allResponded}
+              style={{
+                width: '100%', padding: '14px', borderRadius: 10, fontSize: 14, fontWeight: 500, border: 'none', marginTop: 12,
+                background: allResponded ? '#111' : '#e5e5e5',
+                color: allResponded ? '#fff' : '#aaa',
+              }}
+            >
+              확정
+            </button>
+          )}
         </div>
       </div>
     </main>
