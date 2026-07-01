@@ -6,7 +6,7 @@ export default function Home() {
   const router = useRouter();
 
   return (
-    <main style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '24px', maxWidth: 480, margin: '0 auto' }}>
+    <main style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '24px', maxWidth: 480, margin: '0 auto', width: '100%', boxSizing: 'border-box' as const }}>
       <div style={{ marginBottom: 40 }}>
         <h1 style={{ fontSize: 24, fontWeight: 600, margin: '0 0 8px' }}>모두의 시간</h1>
         <p style={{ fontSize: 15, color: '#666', margin: 0, lineHeight: 1.6 }}>

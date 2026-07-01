@@ -102,7 +102,7 @@ export default function ParticipantsPage() {
   }
 
   return (
-    <main style={{ minHeight: '100dvh', padding: '20px', maxWidth: 480, margin: '0 auto', display: 'flex', flexDirection: 'column' }}>
+    <main style={{ minHeight: '100dvh', padding: '20px', maxWidth: 480, margin: '0 auto', display: 'flex', flexDirection: 'column', width: '100%', boxSizing: 'border-box' as const }}>
       <div style={{ marginBottom: 20 }}>
         <p style={{ fontSize: 13, color: '#999', margin: '0 0 4px' }}>2 / 5</p>
         <h1 style={{ fontSize: 20, fontWeight: 600, margin: 0 }}>참석자를 선택해주세요</h1>
