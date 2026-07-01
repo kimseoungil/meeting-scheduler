@@ -3,7 +3,18 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { saveDraft, loadDraft } from '@/lib/group-draft';
-import { format, addDays } from 'date-fns';
+import { format, addDays, parseISO } from 'date-fns';
+
+function addWorkingDays(dateStr: string, days: number): string {
+  let d = parseISO(dateStr);
+  let added = 0;
+  while (added < days) {
+    d = addDays(d, 1);
+    const dow = d.getDay();
+    if (dow !== 0 && dow !== 6) added++;
+  }
+  return format(d, 'yyyy-MM-dd');
+}
 
 export default function GroupInfoPage() {
   const router = useRouter();
@@ -19,18 +30,26 @@ export default function GroupInfoPage() {
     if (draft.startDate) setStartDate(draft.startDate);
     if (draft.endDate) setEndDate(draft.endDate);
 
-    // 기본값: 오늘 기준 다음 평일 ~ 다음 주 금요일
     if (!draft.startDate || !draft.endDate) {
       const today = new Date();
       const start = addDays(today, 1);
-      const end = addDays(today, 7);
-      setStartDate(format(start, 'yyyy-MM-dd'));
-      setEndDate(format(end, 'yyyy-MM-dd'));
+      const startStr = format(start, 'yyyy-MM-dd');
+      setStartDate(startStr);
+      setEndDate(addWorkingDays(startStr, 4));
     }
     if (!draft.deadline) {
       setDeadlineDate(format(new Date(), 'yyyy-MM-dd'));
     }
   }, []);
+
+  function handleStartDateChange(value: string) {
+    setStartDate(value);
+    if (value) {
+      setEndDate(addWorkingDays(value, 4));
+      const dl = parseISO(value);
+      setDeadlineDate(format(addDays(dl, -2), 'yyyy-MM-dd'));
+    }
+  }
 
   const canProceed = title.trim().length > 0 && startDate && endDate && deadlineDate && deadlineTime;
 
@@ -66,7 +85,7 @@ export default function GroupInfoPage() {
 
         <Field label="기간">
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} style={{ ...inputStyle, flex: 1 }} />
+            <input type="date" value={startDate} onChange={(e) => handleStartDateChange(e.target.value)} style={{ ...inputStyle, flex: 1 }} />
             <span style={{ color: '#999' }}>–</span>
             <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} style={{ ...inputStyle, flex: 1 }} />
           </div>

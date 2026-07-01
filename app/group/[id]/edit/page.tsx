@@ -4,6 +4,18 @@ import { useState, useEffect, use } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase, Group, Participant } from '@/lib/supabase';
 import { FRIEND_SEEDS } from '@/lib/friend-seeds';
+import { format, addDays, parseISO } from 'date-fns';
+
+function addWorkingDays(dateStr: string, days: number): string {
+  let d = parseISO(dateStr);
+  let added = 0;
+  while (added < days) {
+    d = addDays(d, 1);
+    const dow = d.getDay();
+    if (dow !== 0 && dow !== 6) added++;
+  }
+  return format(d, 'yyyy-MM-dd');
+}
 
 const HOST_NAME = '김성일';
 
@@ -90,6 +102,14 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
     setParticipants((prev) => prev.map((x) => (x.id === p.id ? { ...x, role: newRole } : x)));
   }
 
+  function handleStartDateChange(value: string) {
+    setStartDate(value);
+    if (value) {
+      setEndDate(addWorkingDays(value, 4));
+      setDeadlineDate(format(addDays(parseISO(value), -2), 'yyyy-MM-dd'));
+    }
+  }
+
   async function handleSave() {
     if (!group || saving) return;
     setSaving(true);
@@ -134,7 +154,7 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
 
         <Field label="기간">
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} style={{ ...inputStyle, flex: 1 }} />
+            <input type="date" value={startDate} onChange={(e) => handleStartDateChange(e.target.value)} style={{ ...inputStyle, flex: 1 }} />
             <span style={{ color: '#999' }}>–</span>
             <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} style={{ ...inputStyle, flex: 1 }} />
           </div>
