@@ -91,7 +91,7 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
   });
 
   return (
-    <main style={{ minHeight: '100dvh', padding: '24px 40px', maxWidth: 1200, margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+    <main style={{ minHeight: '100dvh', padding: '24px 40px', maxWidth: 1000, margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
       <div style={{ marginBottom: 20 }}>
         <p style={{ fontSize: 13, color: '#999', margin: '0 0 4px' }}>5 / 5</p>
         <h1 style={{ fontSize: 19, fontWeight: 600, margin: 0 }}>{group.title}</h1>

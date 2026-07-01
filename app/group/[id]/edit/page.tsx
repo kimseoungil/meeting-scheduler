@@ -117,7 +117,7 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
   const canSave = title.trim().length > 0 && startDate && endDate && deadlineDate && deadlineTime;
 
   return (
-    <main style={{ minHeight: '100dvh', padding: '20px', maxWidth: 1200, margin: '0 auto', display: 'flex', flexDirection: 'column', width: '100%', boxSizing: 'border-box' as const }}>
+    <main style={{ minHeight: '100dvh', padding: '20px', maxWidth: 1000, margin: '0 auto', display: 'flex', flexDirection: 'column', width: '100%', boxSizing: 'border-box' as const }}>
       <div style={{ marginBottom: 24 }}>
         <h1 style={{ fontSize: 20, fontWeight: 600, margin: 0 }}>회의 수정</h1>
       </div>
