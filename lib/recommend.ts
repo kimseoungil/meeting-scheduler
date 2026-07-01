@@ -24,8 +24,10 @@ export function calculateRecommendations(
   const meetingStartSlots = getMeetingStartSlots(gridStartHour, gridEndHour);
   const totalSlots = getSlotCount(gridStartHour, gridEndHour);
 
-  const requiredParticipants = participants.filter((p) => p.role === 'host' || p.role === 'required');
-  const optionalParticipants = participants.filter((p) => p.role === 'optional');
+  // 응답 완료한 사람만 계산에 포함 (미응답자는 가용 여부 불명이므로 제외)
+  const completedParticipants = participants.filter((p) => p.status === 'completed');
+  const requiredParticipants = completedParticipants.filter((p) => p.role === 'host' || p.role === 'required');
+  const optionalParticipants = completedParticipants.filter((p) => p.role === 'optional');
 
   // participant_id + date + slot_index -> type 매핑
   const blockMap = new Map<string, 'unavailable' | 'disliked'>();

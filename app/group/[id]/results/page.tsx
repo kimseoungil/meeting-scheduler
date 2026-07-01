@@ -91,61 +91,67 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
   });
 
   return (
-    <main style={{ minHeight: '100dvh', padding: '20px', maxWidth: 480, margin: '0 auto' }}>
-      <div style={{ marginBottom: 16 }}>
+    <main style={{ minHeight: '100dvh', padding: '24px 20px', maxWidth: 960, margin: '0 auto' }}>
+      <div style={{ marginBottom: 20 }}>
         <p style={{ fontSize: 13, color: '#999', margin: '0 0 4px' }}>5 / 5</p>
         <h1 style={{ fontSize: 19, fontWeight: 600, margin: 0 }}>{group.title}</h1>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-        <p style={{ fontSize: 14, fontWeight: 500, margin: 0 }}>추천 회의 시간</p>
-        <p style={{ fontSize: 11, color: '#999', margin: 0 }}>마감 {deadlineLabel}</p>
-      </div>
-
-      {candidates.length === 0 ? (
-        <div style={{ padding: '24px 16px', textAlign: 'center', background: '#f7f7f5', borderRadius: 12, marginBottom: 16 }}>
-          <p style={{ fontSize: 13, color: '#999', margin: 0 }}>
-            아직 모두가 가능한 시간을 찾지 못했어요. 참여자들이 입력을 마치면 다시 계산돼요.
-          </p>
-        </div>
-      ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 20 }}>
-          {candidates.map((c, i) => (
-            <CandidateCard key={`${c.date}_${c.startSlot}`} candidate={c} rank={i + 1} gridStartHour={group.grid_start_hour} />
-          ))}
-        </div>
-      )}
-
-      <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 8px' }}>
-        참여자 {completedCount}/{participants.length}
-      </p>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 20 }}>
-        {participants.map((p) => (
-          <div
-            key={p.id}
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              padding: '8px 12px',
-              background: p.id === myParticipantId ? '#eef6ff' : '#f7f7f5',
-              borderRadius: 8,
-            }}
-          >
-            <div>
-              <span style={{ fontSize: 13 }}>{p.name}</span>
-              <span style={{ fontSize: 11, color: '#999', marginLeft: 6 }}>{ROLE_LABEL[p.role]}</span>
-            </div>
-            {p.status === 'completed' ? (
-              <span style={{ fontSize: 11, color: '#1d9e75' }}>응답 완료</span>
-            ) : (
-              <span style={{ fontSize: 11, color: '#ba7517' }}>응답 대기</span>
-            )}
+      <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
+        {/* 왼쪽: 추천 카드 */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+            <p style={{ fontSize: 14, fontWeight: 500, margin: 0 }}>추천 회의 시간</p>
+            <p style={{ fontSize: 11, color: '#999', margin: 0 }}>마감 {deadlineLabel}</p>
           </div>
-        ))}
-      </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {candidates.length === 0 ? (
+            <div style={{ padding: '24px 16px', textAlign: 'center', background: '#f7f7f5', borderRadius: 12 }}>
+              <p style={{ fontSize: 13, color: '#999', margin: 0 }}>
+                아직 모두가 가능한 시간을 찾지 못했어요. 참여자들이 입력을 마치면 다시 계산돼요.
+              </p>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {candidates.map((c, i) => (
+                <CandidateCard key={`${c.date}_${c.startSlot}`} candidate={c} rank={i + 1} gridStartHour={group.grid_start_hour} />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* 오른쪽: 참여자 + 버튼 */}
+        <div style={{ width: 240, flexShrink: 0 }}>
+          <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 8px' }}>
+            참여자 {completedCount}/{participants.length}
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 16 }}>
+            {participants.map((p) => (
+              <div
+                key={p.id}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '8px 12px',
+                  background: p.id === myParticipantId ? '#eef6ff' : '#f7f7f5',
+                  borderRadius: 8,
+                }}
+              >
+                <div>
+                  <span style={{ fontSize: 13 }}>{p.name}</span>
+                  <span style={{ fontSize: 11, color: '#999', marginLeft: 6 }}>{ROLE_LABEL[p.role]}</span>
+                </div>
+                {p.status === 'completed' ? (
+                  <span style={{ fontSize: 11, color: '#1d9e75' }}>완료</span>
+                ) : (
+                  <span style={{ fontSize: 11, color: '#ba7517' }}>대기</span>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {myParticipantId && participants.find((p) => p.id === myParticipantId)?.role === 'host' && (
           <button
             onClick={() => router.push(`/group/${groupId}/edit?pid=${myParticipantId}`)}
@@ -191,10 +197,13 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
             fontSize: 14,
             fontWeight: 500,
             border: 'none',
+            cursor: 'pointer',
           }}
         >
-          {copied ? '링크가 복사됐어요' : '참여자 초대 링크 복사'}
+          {copied ? '링크가 복사됐어요' : '초대 링크 복사'}
         </button>
+          </div>
+        </div>
       </div>
     </main>
   );
