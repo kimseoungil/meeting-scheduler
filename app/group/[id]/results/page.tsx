@@ -99,7 +99,7 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
 
       <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
         {/* 왼쪽: 추천 카드 */}
-        <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ flex: 3, minWidth: 0 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
             <p style={{ fontSize: 14, fontWeight: 500, margin: 0 }}>추천 회의 시간</p>
             <p style={{ fontSize: 11, color: '#999', margin: 0 }}>마감 {deadlineLabel}</p>
@@ -121,7 +121,7 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
         </div>
 
         {/* 오른쪽: 참여자 + 버튼 */}
-        <div style={{ width: 240, flexShrink: 0 }}>
+        <div style={{ width: 180, flexShrink: 0 }}>
           <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 8px' }}>
             참여자 {completedCount}/{participants.length}
           </p>
