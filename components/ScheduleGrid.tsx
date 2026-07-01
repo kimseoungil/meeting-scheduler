@@ -102,7 +102,7 @@ export default function ScheduleGrid({
         </span>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: `32px repeat(${weekdays.length}, 1fr)`, columnGap: 2, rowGap: 0 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: `32px repeat(${weekdays.length}, 1fr)`, gap: 2 }}>
         <div />
         {weekdays.map((d) => (
           <div key={d} style={{ textAlign: 'center', fontSize: 11, color: '#999', paddingBottom: 4 }}>
@@ -163,8 +163,15 @@ function FragmentRow({
         const key = slotKey(date, slot);
         const isFixed = fixedSlots.has(key);
         const isActive = activeSlots.has(key);
-        const isColored = isFixed || isActive;
-        const bg = isFixed ? fixedColor : isActive ? activeColor : '#fff';
+        let bg = '#fff';
+        let border = '1px solid #eee';
+        if (isFixed) {
+          bg = fixedColor;
+          border = '1px solid transparent';
+        } else if (isActive) {
+          bg = activeColor;
+          border = '1px solid transparent';
+        }
         return (
           <div
             key={key}
@@ -187,8 +194,9 @@ function FragmentRow({
             data-cellkey={key}
             style={{
               height: 14,
+              borderRadius: 3,
               background: bg,
-              borderBottom: isColored ? 'none' : '1px solid #f0f0f0',
+              border,
               cursor: isFixed ? 'default' : 'pointer',
             }}
           />
