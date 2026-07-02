@@ -172,6 +172,7 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter' && candidates.length > 0) addParticipant(candidates[0].name); }}
             placeholder="이름으로 검색해서 추가"
             style={{ ...inputStyle, marginBottom: 8 }}
           />

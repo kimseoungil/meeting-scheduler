@@ -112,6 +112,7 @@ export default function ParticipantsPage() {
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
+        onKeyDown={(e) => { if (e.key === 'Enter' && candidates.length > 0) addParticipant(candidates[0].name); }}
         placeholder="이름으로 검색"
         style={{
           width: '100%',
