@@ -102,7 +102,7 @@ export default function ScheduleGrid({
         </span>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: `32px repeat(${weekdays.length}, 1fr)`, columnGap: 2, rowGap: 0 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: `52px repeat(${weekdays.length}, 1fr)`, columnGap: 2, rowGap: 0 }}>
         <div />
         {weekdays.map((d) => (
           <div key={d} style={{ textAlign: 'center', fontSize: 11, color: '#999', paddingBottom: 4 }}>
