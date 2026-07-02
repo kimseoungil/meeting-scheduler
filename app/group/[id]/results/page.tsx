@@ -172,7 +172,7 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
 
         {/* 오른쪽: 버튼 + 참여자 */}
         <div style={{ width: 180, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {candidates.length > 0 && (
+          {candidates.length > 0 && isHost && (
             <button
               className="confirm-desktop"
               onClick={handleConfirm}
@@ -189,7 +189,7 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
           {isHost && (
             <button
               onClick={() => router.push(`/group/${groupId}/edit?pid=${myParticipantId}`)}
-              style={{ width: '100%', padding: '14px', borderRadius: 10, background: '#111', color: '#fff', fontSize: 14, fontWeight: 500, border: 'none' }}
+              style={{ width: '100%', padding: '14px', borderRadius: 10, background: isHost && candidates.length > 0 ? '#fff' : '#111', color: isHost && candidates.length > 0 ? '#111' : '#fff', fontSize: 14, fontWeight: 500, border: isHost && candidates.length > 0 ? '1px solid #ddd' : 'none' }}
             >
               회의 수정
             </button>
@@ -208,29 +208,41 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
               참여자 {completedCount}/{participants.length}
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              {participants.map((p) => (
+              {participants.map((p) => {
+                const isMe = p.id === myParticipantId;
+                const initials = p.name.charAt(0);
+                return (
                 <div
                   key={p.id}
-                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', background: p.id === myParticipantId ? '#eef6ff' : '#f7f7f5', borderRadius: 8 }}
+                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 10px', background: isMe ? '#eef6ff' : '#f7f7f5', borderRadius: 8 }}
                 >
-                  <div>
-                    <span style={{ fontSize: 13 }}>{p.name}</span>
-                    <span style={{ fontSize: 11, color: '#999', marginLeft: 6 }}>{ROLE_LABEL[p.role]}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+                    <div style={{ width: 28, height: 28, borderRadius: '50%', background: isMe ? '#bdd7f5' : '#ddd', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 600, color: isMe ? '#185fa5' : '#888' }}>
+                      {initials}
+                    </div>
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <span style={{ fontSize: 13, fontWeight: isMe ? 600 : 400 }}>{p.name}</span>
+                        {isMe && <span style={{ fontSize: 10, color: '#185fa5', background: '#deeeff', padding: '1px 5px', borderRadius: 4 }}>나</span>}
+                      </div>
+                      <span style={{ fontSize: 10, color: '#999' }}>{ROLE_LABEL[p.role]}</span>
+                    </div>
                   </div>
                   {p.status === 'completed' ? (
-                    <span style={{ fontSize: 11, color: '#1d9e75' }}>완료</span>
+                    <span style={{ fontSize: 11, color: '#1d9e75', flexShrink: 0 }}>완료</span>
                   ) : (
                     <span style={{ fontSize: 11, color: '#ba7517' }}>대기</span>
                   )}
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
       </div>
 
       {/* 모바일 하단 고정 CTA */}
-      {candidates.length > 0 && (
+      {candidates.length > 0 && isHost && (
         <div
           className="confirm-mobile"
           style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '16px 20px 32px', background: '#fff', borderTop: '1px solid #eee', zIndex: 50 }}
